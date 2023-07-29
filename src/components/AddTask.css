@@ -1,0 +1,16 @@
+input {
+  background-color: var(--color-3);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 70%;
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.section-add-task {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  height: 40px;
+}
