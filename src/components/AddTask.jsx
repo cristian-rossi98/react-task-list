@@ -2,7 +2,7 @@ import Button from "./Button";
 import { useState } from "react";
 import "./AddTask.css";
 
-const AddTask = ({ handleTaskAdd }) => {
+const AddTask = ({ inputRef, handleTaskAdd }) => {
   const [inputData, setInputData] = useState("");
 
   function handleTaskAddClick() {
@@ -13,6 +13,7 @@ const AddTask = ({ handleTaskAdd }) => {
   return (
     <section className="section-add-task">
       <input
+        ref={inputRef}
         type="text"
         value={inputData}
         onChange={(e) => setInputData(e.target.value)}

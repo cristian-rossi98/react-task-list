@@ -1,11 +1,14 @@
-import { useState } from "react";
-import "./App.css";
+import { useState, useRef } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import AddTask from "./components/AddTask";
 import Tasks from "./components/Tasks";
+import TaskDetails from "./components/TaskDetails";
 import Header from "./components/Header";
 import Alert from "./components/Alert";
+
+import "./App.css";
 
 const taskObject = [
   {
@@ -25,13 +28,15 @@ const taskObject = [
 export default function App() {
   const [tasks, setTasks] = useState(taskObject);
   const [alert, setAlert] = useState("");
+  const inputRef = useRef(null);
 
   function handleTaskAdd(inputData) {
     if (!inputData.trim()) {
-      setAlert(<Alert value="Preencha o campo com o nome da tarefa" />); 
+      setAlert(<Alert value="Preencha o campo com o nome da tarefa" />);
+      inputRef.current.focus();
       return;
     } else {
-      setAlert('');
+      setAlert("");
     }
 
     const newTask = {
@@ -44,18 +49,42 @@ export default function App() {
 
   function handleTaskUpdate(taskId) {
     const newTask = tasks.map((task) => {
-      if (task.id === taskId) return {...task, done: !task.done};
-      return task
-    })
+      if (task.id === taskId) return { ...task, done: !task.done };
+      return task;
+    });
+    setTasks(newTask);
+  }
+
+  function handleTaskDelete(taskId) {
+    const newTask = tasks.filter((task) => {
+      if (task.id !== taskId) return task;
+    });
     setTasks(newTask);
   }
 
   return (
     <main>
       <Header />
-      <AddTask handleTaskAdd={handleTaskAdd} />
-      {alert}
-      <Tasks tasks={tasks} handleTaskUpdate={handleTaskUpdate} />
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            exact
+            element={
+              <>
+                <AddTask inputRef={inputRef} handleTaskAdd={handleTaskAdd} />
+                {alert}
+                <Tasks
+                  tasks={tasks}
+                  handleTaskUpdate={handleTaskUpdate}
+                  handleTaskDelete={handleTaskDelete}
+                />
+              </>
+            }
+          />
+          <Route path="/:task" exact element={<TaskDetails />} />
+        </Routes>
+      </Router>
     </main>
   );
 }
